@@ -1,0 +1,39 @@
+1. Create an m x n matrix with replicate(m, rnorm(n)) with m=10 column vectors of n=10 elements each,
+constructed with rnorm(n), which creates random normal numbers.
+Then we transform it into a dataframe (thus 10 observations of 10 variables) and perform an algebraic
+operation on each element using a nested for loop: at each iteration, every element referred by the two
+indexes is incremented by a sinusoidal function, compare the vectorized and non-vectorized form of creating
+the solution and report the system time differences.
+Answer:
+tt=replicate(10, rnorm(10))
+tt.df <- as.data.frame(t(tt)) # converted matrix to dataframe
+#non-vectorised solution
+for (i in 1:10) {
+  for (j in 1:10) {
+    tt.df[i,j]<-tt.df[i,j] + 10*sin(0.75*pi)
+    print(tt.df)
+  }
+}
+#vectorised solution
+m=10
+n=10
+tt <- replicate(m, rnorm(n)) 
+tt.df <- data.frame(tt)
+tt.df <- tt.df + 10*sin(0.75*pi)
+tt.df
+
+to get the system time differences:
+system.time(for (i in 1:10) {
+  for (j in 1:10) {
+    tt.df[i,j]<-tt.df[i,j] + 10*sin(0.75*pi)
+    print(tt.df)
+  }
+})
+user  system elapsed 
+  28.83    0.70  281.60
+  
+system.time(
+  tt.df <- tt.df + 10*sin(0.75*pi)  
+)
+ user  system elapsed 
+0.01 0.00 0.04 
